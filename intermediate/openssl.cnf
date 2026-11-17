@@ -19,8 +19,8 @@ crlnumber         = $dir/crlnumber
 private_key       = $dir/private/int.key.pem
 certificate       = $dir/certs/int.cert.pem
 
-default_md        = TODO            # hash used in signatures of leaf certificates and CRLs
-default_days      = TODO            # validity of server and client certificates. Short: why?
+default_md        = sha384          # hash used in signatures of leaf certificates and CRLs
+default_days      = 90          # validity of server and client certificates. Short: why?
 default_crl_days  = 7               # a CRL must be published again before this, or every client is refused
 policy            = policy_loose
 copy_extensions   = copy            # take from the CSR only what the sections below do not set: the SAN.
@@ -42,15 +42,15 @@ string_mask        = utf8only
 
 [ intermediate_dn ]
 # Must match the root's policy_strict: same country and organisation
-countryName       = TODO
-organizationName  = TODO
+countryName       = FR
+organizationName  = EPITA Lab
 commonName        = EPITA Lab Issuing CA
 
 # ---------------------------------------------------------------- extensions
 [ server_cert ]
 basicConstraints       = critical, CA:FALSE
 keyUsage               = critical, digitalSignature
-extendedKeyUsage       = TODO                  # what this certificate is for: a TLS server
+extendedKeyUsage       = serverAuth                  # what this certificate is for: a TLS server
 # no subjectAltName here: the server asks for its names in its CSR (openssl req -addext ...)
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid,issuer
@@ -60,6 +60,6 @@ authorityKeyIdentifier = keyid,issuer
 # or URI:spiffe://lab.internal/billing for a service.
 basicConstraints       = critical, CA:FALSE
 keyUsage               = critical, digitalSignature
-extendedKeyUsage       = TODO                  # what this certificate is for: a TLS client
+extendedKeyUsage       = clientAuth                  # what this certificate is for: a TLS client
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid,issuer

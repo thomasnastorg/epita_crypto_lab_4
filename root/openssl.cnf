@@ -19,8 +19,8 @@ crlnumber         = $dir/crlnumber  # number of the next CRL
 private_key       = $dir/private/ca.key.pem
 certificate       = $dir/certs/ca.cert.pem
 
-default_md        = TODO            # hash used in signatures. Hint: match the strength of a P-384 key
-default_days      = TODO            # validity of what the root signs: the intermediate. 10 years, in days
+default_md        = sha384          # hash used in signatures. Hint: match the strength of a P-384 key
+default_days      = 3650          # validity of what the root signs: the intermediate. 10 years, in days
 default_crl_days  = 180             # how long a root CRL stays valid: the root is offline, it publishes rarely
 policy            = policy_strict
 copy_extensions   = none            # never take extensions from a CSR: the CA decides what it signs
@@ -42,20 +42,20 @@ string_mask        = utf8only
 [ root_dn ]
 countryName       = FR
 organizationName  = EPITA Lab
-commonName        = TODO            # the root's name, for example: EPITA Lab Root CA
+commonName        = EPITA Lab Root CA          # the root's name, for example: EPITA Lab Root CA
 
 # ---------------------------------------------------------------- extensions
 [ v3_ca ]
 # The root certificate itself
-basicConstraints       = critical, CA:TRUE, pathlen:TODO   # how many CA levels may exist BELOW the root?
-keyUsage               = critical, TODO                    # what may this key do? Sign certificates, sign CRLs
+basicConstraints       = critical, CA:TRUE, pathlen:1   # how many CA levels may exist BELOW the root?
+keyUsage               = critical, keyCertSign, cRLSign                    # what may this key do? Sign certificates, sign CRLs
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always,issuer
 
 [ v3_intermediate_ca ]
 # What the root puts in the intermediate's certificate
-basicConstraints       = critical, CA:TRUE, pathlen:TODO   # may the intermediate create another CA?
+basicConstraints       = critical, CA:TRUE, pathlen:0   # may the intermediate create another CA?
 keyUsage               = critical, digitalSignature, keyCertSign, cRLSign
-nameConstraints        = critical, permitted;DNS:TODO      # the only DNS names it may certify: lab.internal and below
+nameConstraints        = critical, permitted;DNS:lab.internal      # the only DNS names it may certify: lab.internal and below
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always,issuer

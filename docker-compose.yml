@@ -45,7 +45,7 @@ services:
     command: python -u /app/app.py
     volumes:
       - ./api:/app:ro
-    networks: [frontend, backend]
+    networks: [backend]
 
   nginx:
     image: nginx:1.29-alpine
