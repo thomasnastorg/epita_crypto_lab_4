@@ -1,0 +1,42 @@
+== Lab 4 check: broken  (2026-11-17 08:16 UTC, OpenSSL 3.5.9)
+-- root CA
+PASS  root certificate present
+PASS  root is self-signed
+PASS  root: CA:TRUE, pathlen:1
+PASS  root: keyCertSign and cRLSign
+PASS  root: P-384 key
+-- issuing CA
+PASS  intermediate signed by the root
+PASS  intermediate: CA:TRUE, pathlen:0
+PASS  intermediate: nameConstraints lab.internal
+-- server certificate
+PASS  www chains to the root
+PASS  www valid for www.lab.internal
+PASS  www: EKU serverAuth
+PASS  www: lifetime 90 days or less
+-- client certificates
+PASS  alice chains to the root
+PASS  alice: EKU clientAuth
+PASS  bob chains to the root
+PASS  bob: EKU clientAuth
+PASS  billing chains to the root
+PASS  billing: EKU clientAuth
+PASS  alice: SAN email:alice@lab.internal
+PASS  billing: SAN URI:spiffe://lab.internal/billing
+-- mutual TLS through nginx
+PASS  - GET /whoami -> 400
+PASS  bob GET /whoami -> 200
+PASS  bob GET /admin -> 403
+PASS  bob GET /invoices -> 403
+PASS  billing GET /invoices -> 200
+PASS  alice GET /admin -> 400
+-- the API cannot be reached without nginx
+PASS  forged headers straight to api:8080 -> no answer (000)
+-- revocation
+PASS  intermediate CRL present
+PASS  root CRL present
+PASS  CRLs valid, bob not revoked
+PASS  index.txt: an alice certificate is revoked (serial 1002)
+PASS  serial 1002 is in the published CRL
+PASS  alice's current certificate is the revoked one
+== 33 passed, 0 failed, 0 skipped
